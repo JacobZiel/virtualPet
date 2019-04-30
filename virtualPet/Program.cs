@@ -13,9 +13,14 @@ namespace virtualPet
         static void Main()
         {
             Console.Title = "Virtual Pet";
-            int hp = 6;
-            int food = 6;
-            int sleep = 6;           
+            int hp = 10;
+            int food = 10;
+            int sleep = 10;
+            int count = 0;
+            bool life = true;
+            string[] names = {"Lean", "Carlos", "Ron", "Rayna", "Debera", "Anh", "Jarrett", "Cristopher", "Jenine", "Herma", "Shu", "Lincoln", "Alexa", "Mason", "Marna", "Shirlene", "Yukiko", "Eilene", "Georgi", "Connor", "Cammie", "Spring", "Neta", "Chanell", "Rea", "Andrea", "Truman", "Dan", "Ben", "Kyle", "Penelope", "Katie", "Jacob" };
+            Random r = new Random();
+            int n = r.Next(0, 32);
             string title = @"
                          Welcome to
    _   _           _                  _       ___          _   
@@ -38,9 +43,19 @@ namespace virtualPet
             Console.Beep(200, 200);
             Console.Beep(200, 100);
             Console.Beep(180, 200);
-            Console.WriteLine("Name your virtual pet");
+            Console.WriteLine("Name your virtual pet or type 1 for random name");
+           
             var name = Console.ReadLine();
-            Console.Clear();        
+            var choosename = name;
+            if(name == "1")
+            {
+                name = names[n];
+            }
+            else
+            {
+                name = choosename;
+            }
+            Console.Clear();
             string hedgTitle = $@"
                                   
     .|||||||||.                                          
@@ -48,7 +63,7 @@ namespace virtualPet
   |||||||||||' .\                                                   
   `||||||||||_,__o                   
 ______________________/\______/\______/\____/\______                 
-       {name}     
+       {name}   
                                                                ";
             Console.WriteLine(hedgTitle);
             Console.Beep(500, 100);
@@ -56,65 +71,83 @@ ______________________/\______/\______/\____/\______
             Console.WriteLine($"{name} health is {hp}, hunger is {food} and tiredness is {sleep}");
             Console.WriteLine(".");
             //call to main logic  
-            Repeat(hp, food, sleep);
-            Console.ReadKey();      
+            Repeat(hp, food, sleep, name, count, life);
+            Console.ReadKey();
         }
+       
 
-        public static void Repeat(int hp, int food, int sleep)
+        public static void Repeat(int hp, int food, int sleep, string name, int count, bool life)
         {
             //suppose to be timer 
-          //  var timer1 = new Timer(_ => Console.WriteLine(@"
-          //\\\\__.  
-          //\\\\'/ "), null, 5000, 10000);
-            while (food > 0 && sleep > 0)
+            var timer1 = new Timer(_ => Console.WriteLine(food--), null, 10000, 10000);
+            var timer2 = new Timer(_ => sleep--, null, 10000, 10000);
+            while (life == true)
             {
-                Console.WriteLine($"1 for sleep, 2 for feed, 3 for stats or 4 for to clear the console |health is {hp}|hunger is {food}|tiredness is {sleep}|");
-                var choice = Console.ReadLine();
-                switch (choice)
+                if (food < 1)
                 {
-                    // rest
-                    case "1":
-                        Console.Beep(200, 200);
-                        Console.Beep(200, 200);
-                        Console.Beep(250, 200);
-                        Console.Beep(270, 400);
-                        food = food - 2;
-                        sleep = sleep + 1;
-                        Console.WriteLine(".");                       
-                        if(food <= 2)
+
+                    timer1.Change(Timeout.Infinite, Timeout.Infinite);
+                    timer2.Change(Timeout.Infinite, Timeout.Infinite);
+                    GameOver(name, count);
+                    life = false;
+                    
+                }
+                else
+                {
+                    while (food > 0 && sleep > 0)
+                    {
+                        Console.WriteLine($"1 for sleep, 2 for feed, 3 for stats or 4 for to clear the console |health is {hp}|hunger is {food}|tiredness is {sleep}|");
+
+                        count++;
+                        var choice = Console.ReadLine();
+                        switch (choice)
                         {
-                            Console.WriteLine(" I'm Hungry! ");
-                        }                        
-                        break;
-                    // feed
-                    case "2":
-                        Console.Beep(500, 200);
-                        Console.Beep(500, 200);
-                        Console.Beep(550, 200);
-                        Console.Beep(570, 400);
-                        sleep = sleep - 2;
-                        food = food + 1;
-                        Console.WriteLine(".");
-                        if (sleep <= 2)
-                        {
-                            Console.WriteLine(" I'm Tired! ");
+                            // rest
+                            case "1":
+                                Console.Beep(200, 100);
+                                Console.Beep(200, 100);
+                                Console.Beep(250, 100);
+                                Console.Beep(270, 200);
+                                food = food - 2;
+                                sleep = sleep + 1;
+                                Console.WriteLine(".");                              
+                                if (food <= 2)
+                                {
+                                    Console.WriteLine(" I'm Hungry! ");
+                                }
+
+                                break;
+                            // feed
+                            case "2":
+                                Console.Beep(500, 100);
+                                Console.Beep(500, 100);
+                                Console.Beep(550, 100);
+                                Console.Beep(570, 200);
+                                sleep = sleep - 2;
+                                food = food + 1;
+                                Console.WriteLine(".");
+                                if (sleep <= 2)
+                                {
+                                    Console.WriteLine(" I'm Tired! ");
+                                }
+                                break;
+                            // Stats
+                            case "3":
+                                Console.Beep(500, 100);
+                                Console.WriteLine(" ");
+                                Console.WriteLine($" health is {hp}, hunger is {food} and tiredness is {sleep} ");
+                                break;
+                            // Clear console
+                            case "4":
+                                Console.Beep(1000, 80);
+                                Console.Clear();
+                                break;
+                            // Error / invalid input
+                            default:
+                                Console.WriteLine("Something went wrong");
+                                break;
                         }
-                        break;
-                    // Stats
-                    case "3":
-                        Console.Beep(500, 100);
-                        Console.WriteLine(" ");
-                        Console.WriteLine($" health is {hp}, hunger is {food} and tiredness is {sleep} ");
-                        break;
-                    // Clear console
-                    case "4":
-                        Console.Beep(1000, 80);
-                        Console.Clear();
-                        break;
-                    // Error / invalid input
-                    default:
-                        Console.WriteLine("Something went wrong");
-                        break;
+                    }
                 }
                 //Console.Clear();    
             }
@@ -126,11 +159,14 @@ ______________________/\______/\______/\____/\______
             //string save2 = string.Join("\u001F", hp, food, sleep);
             //File.WriteAllText(test.txt, text_to_be_saved)
             //timer1.Change(Timeout.Infinite, Timeout.Infinite);
-            GameOver();
+            GameOver(name, count);
         }
 
-        public static void GameOver()
-        { 
+
+
+        public static void GameOver(string name, int count)
+        {
+
             Thread.Sleep(40);
             Thread.Sleep(40);
             Thread.Sleep(40);
@@ -139,15 +175,19 @@ ______________________/\______/\______/\____/\______
             // Flat line gimmick
             Thread.Sleep(140); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Beep(1300, 150); Console.Write("/\\"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Beep(1300, 150); Console.Write("/\\"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Thread.Sleep(40); Console.Write("_"); Console.Beep(1300, 150); Console.Write("/\\"); Console.Beep(1300, 150); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Beep(1300, 2000); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Console.Write("_"); Thread.Sleep(40); Thread.Sleep(40); Console.WriteLine("_"); Console.Beep(1300, 2000);
             Console.WriteLine(" ");
-            Console.WriteLine("Your Pet is dead");
-            string hedgDead = @"
+            string deathDate = DateTime.Now.Year.ToString();
+            string hedgDead = $@"
     .|||||||||.          
    |||||||||||||        
-  |||||||||||x x\      
-  `||||||||||_U__o       
-                                                                 ";
+  |||||||||||x x\       {name} is dead and it lived for {count} days!
+  `||||||||||_U__o    
+
+        RIP 
+      {name} 
+    {deathDate}-{deathDate}                                                         ";
             Console.WriteLine(hedgDead);
             // new game call
+            Console.WriteLine(" ");
             Console.WriteLine("Would you like to play again? 1 for yes, 2 for no");
             var choice2 = Console.ReadLine();
             if (choice2 == "1")
